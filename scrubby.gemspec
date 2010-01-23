@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "init.rb",
      "lib/scrubby.rb",
+     "scrubby.gemspec",
      "spec/scrubby_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb"
