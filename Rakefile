@@ -1,40 +1,41 @@
 require 'rubygems'
 require 'rake'
+require 'rake/testtask'
+require 'rake/rdoctask'
 
 begin
   require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "scrubby"
-    gem.summary = %Q{Clean up your incoming ActiveRecord model attributes}
-    gem.description = %Q{Clean up your incoming ActiveRecord model attributes}
-    gem.email = "steve.richert@gmail.com"
-    gem.homepage = "http://github.com/laserlemon/scrubby"
-    gem.authors = ["laserlemon"]
-    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+  Jeweler::Tasks.new do |g|
+    g.name = 'scrubby'
+    g.summary = %(Clean up your incoming ActiveRecord model attributes)
+    g.description = %(Clean up your incoming ActiveRecord model attributes)
+    g.email = 'steve.richert@gmail.com'
+    g.homepage = 'http://github.com/laserlemon/scrubby'
+    g.authors = ['Steve Richert']
+    g.add_dependency 'activerecord'
+    g.add_development_dependency 'shoulda'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+  puts 'Jeweler (or a dependency) not available. Install it with: gem install jeweler'
 end
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'lib' << 'test'
+  t.pattern = 'test/**/test_*.rb'
+  t.verbose = true
 end
 
 begin
   require 'rcov/rcovtask'
-  Rcov::RcovTask.new do |test|
-    test.libs << 'test'
-    test.pattern = 'test/**/test_*.rb'
-    test.verbose = true
+  Rcov::RcovTask.new do |t|
+    t.libs << 'test'
+    t.pattern = 'test/**/test_*.rb'
+    t.verbose = true
   end
 rescue LoadError
   task :rcov do
-    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
+    abort 'RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov'
   end
 end
 
@@ -42,12 +43,11 @@ task :test => :check_dependencies
 
 task :default => :test
 
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+Rake::RDocTask.new do |r|
+  version = File.exist?('VERSION') ? File.read('VERSION') : ''
 
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "scrubby #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+  r.rdoc_dir = 'rdoc'
+  r.title = "scrubby #{version}"
+  r.rdoc_files.include('README*')
+  r.rdoc_files.include('lib/**/*.rb')
 end
