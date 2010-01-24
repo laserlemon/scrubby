@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{scrubby}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["laserlemon"]
-  s.date = %q{2010-01-23}
+  s.authors = ["Steve Richert"]
+  s.date = %q{2010-01-24}
   s.description = %q{Clean up your incoming ActiveRecord model attributes}
   s.email = %q{steve.richert@gmail.com}
   s.extra_rdoc_files = [
@@ -26,9 +26,8 @@ Gem::Specification.new do |s|
      "init.rb",
      "lib/scrubby.rb",
      "scrubby.gemspec",
-     "spec/scrubby_spec.rb",
-     "spec/spec.opts",
-     "spec/spec_helper.rb"
+     "test/helper.rb",
+     "test/test_scrubby.rb"
   ]
   s.homepage = %q{http://github.com/laserlemon/scrubby}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -36,8 +35,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{Clean up your incoming ActiveRecord model attributes}
   s.test_files = [
-    "spec/scrubby_spec.rb",
-     "spec/spec_helper.rb"
+    "test/helper.rb",
+     "test/test_scrubby.rb"
   ]
 
   if s.respond_to? :specification_version then
@@ -45,12 +44,15 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
+      s.add_runtime_dependency(%q<activerecord>, [">= 0"])
+      s.add_development_dependency(%q<shoulda>, [">= 0"])
     else
-      s.add_dependency(%q<rspec>, [">= 1.2.9"])
+      s.add_dependency(%q<activerecord>, [">= 0"])
+      s.add_dependency(%q<shoulda>, [">= 0"])
     end
   else
-    s.add_dependency(%q<rspec>, [">= 1.2.9"])
+    s.add_dependency(%q<activerecord>, [">= 0"])
+    s.add_dependency(%q<shoulda>, [">= 0"])
   end
 end
 
