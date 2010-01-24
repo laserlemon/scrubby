@@ -1,19 +1,18 @@
 module Scrubby
   def self.included(base)
     base.class_eval do
+      class_inheritable_hash :scrubbers
+      self.scrubbers = {}
+
       extend ClassMethods
+      include InstanceMethods
+
+      alias_method_chain :write_attribute, :scrub
     end
   end
 
   module ClassMethods
     def scrub(*attributes, &block)
-      unless respond_to?(:scrubbers)
-        class_inheritable_hash :scrubbers
-
-        include InstanceMethods
-        alias_method_chain :write_attribute, :scrub
-      end
-
       scrubber = block_given? ? block : instance_method(:scrub)
       self.scrubbers = attributes.inject({}){|s,a| s.merge!(a.to_s => scrubber) }
     end
@@ -29,6 +28,8 @@ module Scrubby
     end
 
     def scrub(value)
+      value = value.dup if value.duplicable?
+
       case value
         when String
           value.strip!
