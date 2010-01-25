@@ -1,17 +1,91 @@
 = scrubby
 
-Description goes here.
+It's so simple! <tt>scrubby</tt> makes sure that all your attributes are cleaned up before they make their way into your models.
 
-== Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+== Installation
+
+In <tt>environment.rb</tt>:
+
+  Rails::Initializer.run do |config|
+    ...
+    config.gem 'scrubby'
+    ...
+  end
+
+At your application root, run:
+
+  $ sudo rake gems:install
+
+== Example
+
+By default, <tt>scrubby</tt> will strip extra whitespace from strings, and turn blank strings into nil values:
+
+  class User < ActiveRecord::Base
+    scrub :first_name, :middle_name, :last_name
+  end
+
+  >> u = User.new(:first_name => " Steve", :middle_name => "  ", :last_name => "Richert ")
+  => #<User first_name: "Steve", middle_name: nil, last_name: "Richert">
+
+Or you can override the default behavior, just by defining a <tt>scrub</tt> instance method:
+
+  class User < ActiveRecord::Base
+    scrub :first_name, :middle_name, :last_name
+  
+    def scrub(value)
+      value.to_s.upcase
+    end
+  end
+
+  >> u = User.new(:first_name => "Steve", :last_name => "Richert")
+  => #<User first_name: "STEVE", middle_name: "", last_name: "RICHERT">
+
+And defining your own scrubbers inline is super easy:
+
+  class User < ActiveRecord::Base
+    scrub(:first_name, :last_name){|v| v.blank? ? nil : v.titleize }
+  
+    scrub(:middle_name) do |value|
+      initials = value.split(" ").map{|n| n.first + "." }
+      initials.empty? ? nil : initials.join(" ")
+    end      
+  end
+
+  class Admin < User
+    scrub(:middle_name){ nil }
+  end
+
+  >> u = User.new(:first_name => "stephen", :middle_name => "joel michael", :last_name => "richert")
+  => #<User first_name: "Stephen", middle_name: "J. M.", last_name: "Richert">
+  >> a = Admin.new(:first_name => "stephen", :middle_name => "joel michael", :last_name => "richert")
+  => #<Admin first_name: "Stephen", middle_name: nil, last_name: "Richert">
+
+== How It Works
+
+It's pretty straightforward, and there's nothing all that fancy happening behind the scenes.
+
+Scrubbing happens only when attributes are set. That way, no time is wasted scrubbing every time an attribute is retrieved.
+
+For column attributes, the scrubbing is done at the <tt>write_attribute</tt> level, without stepping on ActiveRecord's toes by creating a bunch of unnecessary setter methods.
+
+<tt>scrubby</tt> also works with virtual attributes, simply by adding an <tt>alias_method_chain</tt> to the corresponding setter method, so the original can still be accessed via <tt>attribute_without_scrub=</tt>.
+
+Inheritance is respected, just as you'd expect, down through model subclasses. Scrubbers are overridden in subclasses with no problem.
+
+== Inspiration
+
+Those of you who are familiar with <tt>attribute_normalizer</tt>[http://github.com/mdeering/attribute_normalizer] will recognize the how <tt>scrubby</tt> looks and feels, and that's no accident! <tt>attribute_normalizer</tt> has a simple, clean and effective interface.
+
+But <tt>scrubby</tt> was written to be an improvement on what's happening behind the scenes, particularly with regards to inheritance and avoiding unnecessary method definitions. Basically, the idea was to really clean up and simplify the back-end of an already awesome interface.
+
+== Contributing
+
+* Fork[http://github.com/laserlemon/scrubby/fork] the project
+* Make your feature addition or bug fix
+* Add, change or remove corresponding tests
+* Commit (please don't change Rakefile or VERSION)
+* Send me a pull request
 
 == Copyright
 
-Copyright (c) 2010 laserlemon. See LICENSE for details.
+Copyright (c) 2010 Steve Richert. See LICENSE for details.
