@@ -32,7 +32,7 @@ Or you can override the default behavior, just by defining a +scrub+ instance me
 
   class User < ActiveRecord::Base
     scrub :first_name, :middle_name, :last_name
-  
+    
     def scrub(value)
       value.to_s.upcase
     end
@@ -46,11 +46,11 @@ And defining your own scrubbers inline is super easy:
 
   class User < ActiveRecord::Base
     scrub(:first_name, :last_name){|v| v.blank? ? nil : v.titleize }
-  
+    
     scrub :middle_name do |value|
       initials = value.split(" ").map{|n| n.first.upcase + "." }
       initials.empty? ? nil : initials.join(" ")
-    end      
+    end
   end
 
 
