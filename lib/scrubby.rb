@@ -15,6 +15,16 @@ module Scrubby
     def scrub(*attributes, &block)
       scrubber = block_given? ? block : instance_method(:scrub)
       self.scrubbers = attributes.inject({}){|s,a| s.merge!(a.to_s => scrubber) }
+
+      attributes.reject{|a| column_names.include?(a.to_s) }.each do |virtual_attribute|
+        define_method "#{virtual_attribute}_with_scrub=" do |value|
+          scrubber = scrubbers[virtual_attribute.to_s]
+          value = scrubber.bind(self).call(value)
+          send("#{virtual_attribute}_without_scrub=", value)
+        end
+
+        alias_method_chain "#{virtual_attribute}=", :scrub
+      end
     end
   end
 
