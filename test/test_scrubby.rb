@@ -117,6 +117,18 @@ class TestScrubby < Test::Unit::TestCase
       end
     end
 
+    context 'over multiple declarations' do
+      setup do
+        User.scrub(:first_name)
+        User.scrub(:last_name)
+        @user = User.new
+      end
+
+      should 'respect all scrubbers' do
+        assert_same_elements %w(first_name last_name), User.scrubbers.keys
+      end
+    end
+
     context 'an inherited model' do
       setup do
         User.scrub(:first_name)
