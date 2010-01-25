@@ -11,6 +11,7 @@
 #     scrub :name
 #   end
 #
+#
 #   user = User.new(:name => " Steve Richert ")
 #   user.name # => "Steve Richert"
 #   noname = User.new(:name => " ")
@@ -47,17 +48,18 @@ module Scrubby
     #     scrub :first_name, :last_name
     #   end
     #
+    #
     #   class User < ActiveRecord::Base
     #     scrub :first_name, :last_name do |value|
     #       value.blank? ? nil : value.titleize
     #     end
     #   end
     #
+    #
     #   class User < ActiveRecord::Base
     #     scrub(:first_name){|v| v.to_s.upcase }
     #     scrub(:last_name){ nil }
     #   end
-    #
     def scrub(*attributes, &block)
       scrubber = block_given? ? block : instance_method(:scrub)
       self.scrubbers = attributes.inject({}){|s,a| s.merge!(a.to_s => scrubber) }

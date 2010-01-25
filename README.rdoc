@@ -4,7 +4,7 @@ It's so simple! +scrubby+ makes sure that all your attributes are cleaned up bef
 
 == Installation
 
-In +environment.rb+:
+In <tt>environment.rb</tt>:
 
   Rails::Initializer.run do |config|
     ...
@@ -24,6 +24,7 @@ By default, +scrubby+ will strip extra whitespace from strings, and turn blank s
     scrub :first_name, :middle_name, :last_name
   end
 
+
   >> u = User.new(:first_name => " Steve", :middle_name => "  ", :last_name => "Richert ")
   => #<User first_name: "Steve", middle_name: nil, last_name: "Richert">
 
@@ -37,6 +38,7 @@ Or you can override the default behavior, just by defining a +scrub+ instance me
     end
   end
 
+
   >> u = User.new(:first_name => "Steve", :last_name => "Richert")
   => #<User first_name: "STEVE", middle_name: "", last_name: "RICHERT">
 
@@ -46,14 +48,16 @@ And defining your own scrubbers inline is super easy:
     scrub(:first_name, :last_name){|v| v.blank? ? nil : v.titleize }
   
     scrub :middle_name do |value|
-      initials = value.split(" ").map{|n| n.first + "." }
+      initials = value.split(" ").map{|n| n.first.upcase + "." }
       initials.empty? ? nil : initials.join(" ")
     end      
   end
 
+
   class Admin < User
     scrub(:middle_name){ nil }
   end
+
 
   >> u = User.new(:first_name => "stephen", :middle_name => "joel michael", :last_name => "richert")
   => #<User first_name: "Stephen", middle_name: "J. M.", last_name: "Richert">
@@ -68,7 +72,7 @@ Scrubbing happens only when attributes are set. That way, no time is wasted scru
 
 For column attributes, the scrubbing is done at the +write_attribute+ level, without stepping on ActiveRecord's toes by creating a bunch of unnecessary setter methods.
 
-+scrubby+ also works with virtual attributes, simply by adding an +alias_method_chain+ to the corresponding setter method, so the original can still be accessed via +attribute_without_scrub=+.
++scrubby+ also works with virtual attributes, simply by adding an +alias_method_chain+ to the corresponding setter method, so the original can still be accessed via <tt>attribute_without_scrub=</tt>.
 
 Inheritance is respected, just as you'd expect, down through model subclasses. Scrubbers are overridden in subclasses with no problem.
 
@@ -80,7 +84,7 @@ But +scrubby+ was written to be an improvement on what's happening behind the sc
 
 == Contributing
 
-* Fork[http://github.com/laserlemon/scrubby/fork] the project
+* Fork the project
 * Make your feature addition or bug fix
 * Add, change or remove corresponding tests
 * Commit (please don't change Rakefile or VERSION)
