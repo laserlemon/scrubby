@@ -17,7 +17,6 @@
 #   noname.name # => nil
 #
 # See the +scrub+ class method documentation for more details.
-
 module Scrubby
   def self.included(base) #:nodoc:
     base.class_eval do
@@ -44,20 +43,20 @@ module Scrubby
     #
     # == Examples
     #
-    # class User < ActiveRecord::Base
-    #   scrub :first_name, :last_name
-    # end
-    #
-    # class User < ActiveRecord::Base
-    #   scrub :first_name, :last_name do |value|
-    #     value.blank? ? nil : value.titleize
+    #   class User < ActiveRecord::Base
+    #     scrub :first_name, :last_name
     #   end
-    # end
     #
-    # class User < ActiveRecord::Base
-    #   scrub(:first_name){|v| v.to_s.upcase }
-    #   scrub(:last_name){ nil }
-    # end
+    #   class User < ActiveRecord::Base
+    #     scrub :first_name, :last_name do |value|
+    #       value.blank? ? nil : value.titleize
+    #     end
+    #   end
+    #
+    #   class User < ActiveRecord::Base
+    #     scrub(:first_name){|v| v.to_s.upcase }
+    #     scrub(:last_name){ nil }
+    #   end
     #
     def scrub(*attributes, &block)
       scrubber = block_given? ? block : instance_method(:scrub)

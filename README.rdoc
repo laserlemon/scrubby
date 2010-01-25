@@ -1,10 +1,10 @@
 = scrubby
 
-It's so simple! <tt>scrubby</tt> makes sure that all your attributes are cleaned up before they make their way into your models.
+It's so simple! +scrubby+ makes sure that all your attributes are cleaned up before they make their way into your models.
 
 == Installation
 
-In <tt>environment.rb</tt>:
+In +environment.rb+:
 
   Rails::Initializer.run do |config|
     ...
@@ -18,7 +18,7 @@ At your application root, run:
 
 == Example
 
-By default, <tt>scrubby</tt> will strip extra whitespace from strings, and turn blank strings into nil values:
+By default, +scrubby+ will strip extra whitespace from strings, and turn blank strings into nil values:
 
   class User < ActiveRecord::Base
     scrub :first_name, :middle_name, :last_name
@@ -27,7 +27,7 @@ By default, <tt>scrubby</tt> will strip extra whitespace from strings, and turn 
   >> u = User.new(:first_name => " Steve", :middle_name => "  ", :last_name => "Richert ")
   => #<User first_name: "Steve", middle_name: nil, last_name: "Richert">
 
-Or you can override the default behavior, just by defining a <tt>scrub</tt> instance method:
+Or you can override the default behavior, just by defining a +scrub+ instance method:
 
   class User < ActiveRecord::Base
     scrub :first_name, :middle_name, :last_name
@@ -45,7 +45,7 @@ And defining your own scrubbers inline is super easy:
   class User < ActiveRecord::Base
     scrub(:first_name, :last_name){|v| v.blank? ? nil : v.titleize }
   
-    scrub(:middle_name) do |value|
+    scrub :middle_name do |value|
       initials = value.split(" ").map{|n| n.first + "." }
       initials.empty? ? nil : initials.join(" ")
     end      
@@ -66,17 +66,17 @@ It's pretty straightforward, and there's nothing all that fancy happening behind
 
 Scrubbing happens only when attributes are set. That way, no time is wasted scrubbing every time an attribute is retrieved.
 
-For column attributes, the scrubbing is done at the <tt>write_attribute</tt> level, without stepping on ActiveRecord's toes by creating a bunch of unnecessary setter methods.
+For column attributes, the scrubbing is done at the +write_attribute+ level, without stepping on ActiveRecord's toes by creating a bunch of unnecessary setter methods.
 
-<tt>scrubby</tt> also works with virtual attributes, simply by adding an <tt>alias_method_chain</tt> to the corresponding setter method, so the original can still be accessed via <tt>attribute_without_scrub=</tt>.
++scrubby+ also works with virtual attributes, simply by adding an +alias_method_chain+ to the corresponding setter method, so the original can still be accessed via +attribute_without_scrub=+.
 
 Inheritance is respected, just as you'd expect, down through model subclasses. Scrubbers are overridden in subclasses with no problem.
 
 == Inspiration
 
-Those of you who are familiar with <tt>attribute_normalizer</tt>[http://github.com/mdeering/attribute_normalizer] will recognize the how <tt>scrubby</tt> looks and feels, and that's no accident! <tt>attribute_normalizer</tt> has a simple, clean and effective interface.
+Those of you who are familiar with +attribute_normalizer+[http://github.com/mdeering/attribute_normalizer] will recognize the how +scrubby+ looks and feels, and that's no accident! +attribute_normalizer+ has a simple, clean and effective interface.
 
-But <tt>scrubby</tt> was written to be an improvement on what's happening behind the scenes, particularly with regards to inheritance and avoiding unnecessary method definitions. Basically, the idea was to really clean up and simplify the back-end of an already awesome interface.
+But +scrubby+ was written to be an improvement on what's happening behind the scenes, particularly with regards to inheritance and avoiding unnecessary method definitions. Basically, the idea was to really clean up and simplify the back-end of an already awesome interface.
 
 == Contributing
 
