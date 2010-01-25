@@ -83,10 +83,10 @@ class TestScrubby < Test::Unit::TestCase
         @user = User.new
       end
 
-      should 'do nothing' do
+      should 'clean the value' do
         middle_name = ' Joel Michael '
         @user.middle_name = middle_name
-        assert_equal middle_name, @user.middle_name
+        assert_not_equal middle_name, @user.middle_name
       end
     end
 
