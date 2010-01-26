@@ -83,10 +83,16 @@ class TestScrubby < Test::Unit::TestCase
         @user = User.new
       end
 
-      should 'clean the value' do
-        middle_name = ' Joel Michael '
-        @user.middle_name = middle_name
-        assert_not_equal middle_name, @user.middle_name
+      should 'do nothing' do
+        assert_nothing_raised do
+          middle_name = ' Joel Michael '
+          @user.update_attributes(
+            :first_name => 'Stephen',
+            :middle_name => middle_name,
+            :last_name => 'Richert'
+          )
+          assert_equal middle_name, @user.middle_name
+        end
       end
     end
 
