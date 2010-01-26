@@ -63,18 +63,6 @@ module Scrubby
     def scrub(*attributes, &block)
       scrubber = block_given? ? block : instance_method(:scrub)
       self.scrubbers = attributes.inject({}){|s,a| s.merge!(a.to_s => scrubber) }
-
-      attributes.reject{|a| column_names.include?(a.to_s) }.each do |virtual_attribute|
-        unless instance_methods.include?("#{virtual_attribute}_with_scrub=")
-          define_method "#{virtual_attribute}_with_scrub=" do |value|
-            scrubber = scrubbers[virtual_attribute.to_s]
-            value = scrubber.bind(self).call(value)
-            send("#{virtual_attribute}_without_scrub=", value)
-          end
-
-          alias_method_chain "#{virtual_attribute}=", :scrub
-        end
-      end
     end
   end
 
@@ -82,9 +70,6 @@ module Scrubby
     # An alias of the +write_attribute+ method, +write_attribute_with_scrub+ will check whether a
     # scrubber exists for the given attribute and if so, scrub the given value before passing it
     # on to the original +write_attribute+ method.
-    #
-    # This is used for column-based attributes, while virtual attributes are handled by aliasing
-    # the corresponding setter methods and scrubbing there.
     def write_attribute_with_scrub(attribute, value)
       if scrubber = scrubbers[attribute.to_s]
         value = scrubber.bind(self).call(value)
