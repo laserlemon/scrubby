@@ -70,9 +70,7 @@ It's pretty straightforward, and there's nothing all that fancy happening behind
 
 Scrubbing happens only when attributes are set. That way, no time is wasted scrubbing every time an attribute is retrieved.
 
-For column attributes, the scrubbing is done at the +write_attribute+ level, without stepping on ActiveRecord's toes by creating a bunch of unnecessary setter methods.
-
-+scrubby+ also works with virtual attributes, simply by adding an +alias_method_chain+ to the corresponding setter method, so the original can still be accessed via <tt>attribute_without_scrub=</tt>.
+Scrubbing is done at the +write_attribute+ level, without stepping on ActiveRecord's toes by creating a bunch of unnecessary setter methods.
 
 Inheritance is respected, just as you'd expect, down through model subclasses. Scrubbers are overridden in subclasses with no problem.
 
@@ -80,7 +78,7 @@ Inheritance is respected, just as you'd expect, down through model subclasses. S
 
 Those of you who are familiar with +attribute_normalizer+[http://github.com/mdeering/attribute_normalizer] will recognize the how +scrubby+ looks and feels, and that's no accident! +attribute_normalizer+ has a simple, clean and effective interface.
 
-But +scrubby+ was written to be an improvement on what's happening behind the scenes, particularly with regards to inheritance and avoiding unnecessary method definitions. Basically, the idea was to really clean up and simplify the back-end of an already awesome interface.
+But +scrubby+ was written to be an improvement on what's happening behind the scenes, particularly with regards to inheritance and avoiding unnecessary method definitions. Basically, the idea was to really simplify the back-end of an already awesome interface, and to gear it specifically toward ActiveRecord.
 
 == Contributing
 
