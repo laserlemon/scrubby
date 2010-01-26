@@ -64,6 +64,10 @@ module Scrubby
       scrubber = block_given? ? block : instance_method(:scrub)
       self.scrubbers = attributes.inject({}){|s,a| s.merge!(a.to_s => scrubber) }
     end
+
+    def scrubby?
+      !scrubbers.blank?
+    end
   end
 
   module InstanceMethods
@@ -71,7 +75,7 @@ module Scrubby
     # scrubber exists for the given attribute and if so, scrub the given value before passing it
     # on to the original +write_attribute+ method.
     def write_attribute_with_scrub(attribute, value)
-      if scrubber = scrubbers[attribute.to_s]
+      if self.class.scrubby? && scrubber = scrubbers[attribute.to_s]
         value = scrubber.bind(self).call(value)
       end
 
